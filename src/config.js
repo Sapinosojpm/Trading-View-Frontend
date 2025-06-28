@@ -4,17 +4,14 @@ const isVercel = typeof window !== 'undefined' && window.location.hostname.inclu
 
 // Use environment variables if available, otherwise fall back to defaults
 const getBackendUrl = () => {
-  // Check for environment variable first
-  if (import.meta.env.VITE_BACKEND_URL) {
-    return import.meta.env.VITE_BACKEND_URL;
+  // Check for VITE_BACKEND_URI environment variable first
+  if (import.meta.env.VITE_BACKEND_URI) {
+    return import.meta.env.VITE_BACKEND_URI;
   }
   
   // Use production URL if on Vercel
   if (isVercel) {
-    // For now, let's use a placeholder that you can replace with your actual backend URL
-    // You can either set VITE_BACKEND_URL in Vercel environment variables
-    // or replace this with your actual backend domain
-    return 'https://trading-view-backend.onrender.com'; // Replace with your actual backend domain
+    return 'https://trading-view-backend.onrender.com';
   }
   
   // Default to localhost for development
@@ -22,17 +19,14 @@ const getBackendUrl = () => {
 };
 
 const getWebSocketUrl = () => {
-  // Check for environment variable first
-  if (import.meta.env.VITE_WEBSOCKET_URL) {
-    return import.meta.env.VITE_WEBSOCKET_URL;
+  // Check for VITE_WEBSOCKET_URI environment variable first
+  if (import.meta.env.VITE_WEBSOCKET_URI) {
+    return import.meta.env.VITE_WEBSOCKET_URI;
   }
   
   // Use production WebSocket URL if on Vercel
   if (isVercel) {
-    // For now, let's use a placeholder that you can replace with your actual WebSocket URL
-    // You can either set VITE_WEBSOCKET_URL in Vercel environment variables
-    // or replace this with your actual WebSocket domain
-    return 'wss://your-backend-domain.com'; // Replace with your actual backend domain
+    return 'wss://trading-view-backend.onrender.com';
   }
   
   // Default to localhost for development
