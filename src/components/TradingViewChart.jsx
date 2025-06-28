@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import useWebSocket from '../hooks/useWebSocket.js';
+import { wsUri, backendUri } from '../config.js';
 import { 
   ChartBarIcon,
   ClockIcon,
@@ -30,14 +31,14 @@ const TradingViewChart = ({
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   
   // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage } = useWebSocket(wsUri);
 
   // Fetch initial candlestick data
   useEffect(() => {
     const fetchCandles = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`http://localhost:4000/api/okx/price-movement?timeframe=${timeframe}&limit=${maxCandles}`);
+        const response = await fetch(`${backendUri}/api/okx/price-movement?timeframe=${timeframe}&limit=${maxCandles}`);
         
         if (response.ok) {
           const data = await response.json();

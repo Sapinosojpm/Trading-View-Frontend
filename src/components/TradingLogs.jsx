@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useWebSocket from '../hooks/useWebSocket.js';
+import { backendUri, wsUri, apiEndpoints } from '../config.js';
 
 const TradingLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -8,7 +9,7 @@ const TradingLogs = () => {
   const [isToggling, setIsToggling] = useState(false);
 
   // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage } = useWebSocket(wsUri);
 
   // Handle WebSocket messages
   useEffect(() => {
@@ -37,7 +38,7 @@ const TradingLogs = () => {
   useEffect(() => {
     const fetchAutoTradeStatus = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/autotrade/status');
+        const response = await fetch(apiEndpoints.autoTradeStatus);
         if (response.ok) {
           const status = await response.json();
           setAutoTradeStatus(status);
@@ -60,7 +61,7 @@ const TradingLogs = () => {
     
     setIsToggling(true);
     try {
-      const response = await fetch('http://localhost:4000/api/autotrade/toggle', {
+      const response = await fetch(apiEndpoints.autoTradeToggle, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

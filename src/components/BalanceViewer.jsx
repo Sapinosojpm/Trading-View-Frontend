@@ -1,6 +1,7 @@
 // src/components/BalanceViewer.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { backendUri, apiEndpoints } from '../config.js';
 import { 
   CurrencyDollarIcon, 
   ArrowTrendingUpIcon, 
@@ -20,7 +21,7 @@ const BalanceViewer = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('http://localhost:4000/api/okx/balance');
+      const response = await axios.get(apiEndpoints.balance);
       setBalance(response.data);
       setLastUpdated(new Date());
     } catch (error) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CandlestickChart from './CandlestickChart.jsx';
 import useWebSocket from '../hooks/useWebSocket.js';
+import { wsUri } from '../config.js';
 import { 
   ChartBarIcon,
   ClockIcon,
@@ -16,7 +17,7 @@ const CandlestickPage = () => {
   const [showVolume, setShowVolume] = useState(false);
   
   // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage } = useWebSocket(wsUri);
 
   const timeframes = [
     { value: '1m', label: '1 Minute' },

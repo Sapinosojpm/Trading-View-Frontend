@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useWebSocket from '../hooks/useWebSocket.js';
+import { backendUri, wsUri, apiEndpoints } from '../config.js';
 import { 
   ArrowUpIcon, 
   ArrowDownIcon,
@@ -40,7 +41,7 @@ const TradingInterface = () => {
   const [recentTrades, setRecentTrades] = useState([]);
 
   // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage } = useWebSocket(wsUri);
 
   // Handle WebSocket messages
   useEffect(() => {
@@ -71,8 +72,8 @@ const TradingInterface = () => {
     const fetchInitialData = async () => {
       try {
         const [priceResponse, balanceResponse] = await Promise.all([
-          fetch('http://localhost:4000/api/okx/price'),
-          fetch('http://localhost:4000/api/okx/balance')
+          fetch(apiEndpoints.price),
+          fetch(apiEndpoints.balance)
         ]);
         
         if (priceResponse.ok) {
@@ -104,7 +105,7 @@ const TradingInterface = () => {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:4000/api/okx/trade', {
+      const response = await fetch(`${backendUri}/api/okx/trade`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

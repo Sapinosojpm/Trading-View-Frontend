@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useWebSocket from '../hooks/useWebSocket.js';
 import CandlestickChart from './CandlestickChart.jsx';
 import { Link } from 'react-router-dom';
+import { wsUri } from '../config.js';
 import { 
   ChartBarIcon, 
   ArrowTrendingUpIcon,
@@ -31,7 +32,7 @@ const PriceMovement = () => {
   const [maxHistoryLength] = useState(100);
 
   // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage } = useWebSocket(wsUri);
   const canvasRef = useRef(null);
 
   // Handle WebSocket messages

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useWebSocket from '../hooks/useWebSocket.js';
+import { backendUri, wsUri, apiEndpoints } from '../config.js';
 import { 
   ChartBarIcon, 
   CurrencyDollarIcon, 
@@ -24,7 +25,7 @@ const Dashboard = () => {
   const [isToggling, setIsToggling] = useState(false);
 
   // WebSocket connection
-  const { isConnected, lastMessage, error: wsError } = useWebSocket('ws://localhost:4000');
+  const { isConnected, lastMessage, error: wsError } = useWebSocket(wsUri);
 
   // Handle WebSocket messages
   useEffect(() => {
@@ -68,28 +69,28 @@ const Dashboard = () => {
         setIsLoading(true);
         
         // Fetch initial price
-        const priceResponse = await fetch('http://localhost:4000/api/okx/price');
+        const priceResponse = await fetch(apiEndpoints.price);
         if (priceResponse.ok) {
           const priceData = await priceResponse.json();
           setSolPrice(priceData.price);
         }
         
         // Fetch initial balance
-        const balanceResponse = await fetch('http://localhost:4000/api/okx/balance');
+        const balanceResponse = await fetch(apiEndpoints.balance);
         if (balanceResponse.ok) {
           const balanceData = await balanceResponse.json();
           setBalance(balanceData);
         }
         
         // Fetch market data
-        const marketResponse = await fetch('http://localhost:4000/api/okx/market-data');
+        const marketResponse = await fetch(apiEndpoints.marketData);
         if (marketResponse.ok) {
           const marketData = await marketResponse.json();
           setMarketData(marketData);
         }
         
         // Fetch auto-trade status
-        const autoTradeResponse = await fetch('http://localhost:4000/api/autotrade/status');
+        const autoTradeResponse = await fetch(apiEndpoints.autoTradeStatus);
         if (autoTradeResponse.ok) {
           const autoTradeData = await autoTradeResponse.json();
           setAutoTradeStatus(autoTradeData);
@@ -153,7 +154,7 @@ const Dashboard = () => {
     setIsToggling(true);
     try {
       console.log('🌐 Making API request to /api/autotrade/toggle...');
-      const response = await fetch('http://localhost:4000/api/autotrade/toggle', {
+      const response = await fetch(apiEndpoints.autoTradeToggle, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ const Dashboard = () => {
   const debugAutoTrading = async () => {
     console.log('🔍 Debug button clicked!');
     try {
-      const response = await fetch('http://localhost:4000/api/autotrade/debug');
+      const response = await fetch(apiEndpoints.autoTradeDebug);
       if (response.ok) {
         const debugInfo = await response.json();
         console.log('📊 Debug info:', debugInfo);
