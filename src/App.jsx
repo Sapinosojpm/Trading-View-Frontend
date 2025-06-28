@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
@@ -27,6 +27,8 @@ function App() {
             <Route path="/balance" element={<BalanceViewer />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/logs" element={<TradingLogs />} />
+            {/* Catch-all route for 404 errors */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </Router>
