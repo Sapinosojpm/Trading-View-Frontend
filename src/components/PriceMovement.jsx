@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
 import CandlestickChart from './CandlestickChart.jsx';
 import { Link } from 'react-router-dom';
-import { wsUri } from '../config.js';
 import { 
   ChartBarIcon, 
   ArrowTrendingUpIcon,
@@ -31,8 +30,8 @@ const PriceMovement = () => {
   const [trend, setTrend] = useState('neutral');
   const [maxHistoryLength] = useState(100);
 
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
   const canvasRef = useRef(null);
 
   // Handle WebSocket messages

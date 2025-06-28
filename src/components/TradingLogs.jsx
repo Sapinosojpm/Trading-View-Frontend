@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { backendUri, wsUri, apiEndpoints } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
+import { backendUri, apiEndpoints } from '../config.js';
 
 const TradingLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -8,8 +8,8 @@ const TradingLogs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
 
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   // Handle WebSocket messages
   useEffect(() => {

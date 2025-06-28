@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { wsUri, backendUri } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
+import { backendUri } from '../config.js';
 import { 
   ChartBarIcon,
   ClockIcon,
@@ -30,8 +30,8 @@ const TradingViewChart = ({
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   // Fetch initial candlestick data
   useEffect(() => {

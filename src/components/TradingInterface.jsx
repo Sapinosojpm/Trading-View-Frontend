@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { backendUri, wsUri, apiEndpoints } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
+import { backendUri, apiEndpoints } from '../config.js';
 import { 
   ArrowUpIcon, 
   ArrowDownIcon,
@@ -40,8 +40,8 @@ const TradingInterface = () => {
   const [success, setSuccess] = useState(null);
   const [recentTrades, setRecentTrades] = useState([]);
 
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   // Handle WebSocket messages
   useEffect(() => {

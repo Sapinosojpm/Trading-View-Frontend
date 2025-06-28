@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import CandlestickChart from './CandlestickChart.jsx';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { wsUri } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
 import { 
   ChartBarIcon,
   ClockIcon,
   Cog6ToothIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  PlayIcon,
+  PauseIcon,
+  MagnifyingGlassIcon,
+  ArrowsPointingOutIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
 const CandlestickPage = () => {
   const [timeframe, setTimeframe] = useState('1m');
-  const [maxCandles, setMaxCandles] = useState(100);
-  const [showGrid, setShowGrid] = useState(true);
-  const [showVolume, setShowVolume] = useState(false);
+  const [maxCandles, setMaxCandles] = useState(50);
+  const [showVolume, setShowVolume] = useState(true);
+  const [showIndicators, setShowIndicators] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [zoom, setZoom] = useState(1);
   
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   const timeframes = [
     { value: '1m', label: '1 Minute' },
@@ -105,16 +110,6 @@ const CandlestickPage = () => {
             <label className="flex items-center space-x-2 text-white text-sm">
               <input
                 type="checkbox"
-                checked={showGrid}
-                onChange={(e) => setShowGrid(e.target.checked)}
-                className="rounded border-white/30 bg-white/20"
-              />
-              <span>Show Grid</span>
-            </label>
-
-            <label className="flex items-center space-x-2 text-white text-sm">
-              <input
-                type="checkbox"
                 checked={showVolume}
                 onChange={(e) => setShowVolume(e.target.checked)}
                 className="rounded border-white/30 bg-white/20"
@@ -132,7 +127,6 @@ const CandlestickPage = () => {
           <CandlestickChart 
             timeframe={timeframe} 
             maxCandles={maxCandles}
-            showGrid={showGrid}
             showVolume={showVolume}
           />
         </div>

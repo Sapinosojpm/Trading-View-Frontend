@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TradingViewChart from './TradingViewChart.jsx';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { wsUri } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
 import { 
   ChartBarIcon,
   ClockIcon,
@@ -22,8 +21,8 @@ const TradingViewPage = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [zoom, setZoom] = useState(1);
   
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   const timeframes = [
     { value: '1m', label: '1 Minute' },

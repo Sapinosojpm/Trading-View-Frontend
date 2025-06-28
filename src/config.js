@@ -40,7 +40,6 @@ export const wsUri = getWebSocketUrl();
 export const apiEndpoints = {
   price: `${backendUri}/api/okx/price`,
   balance: `${backendUri}/api/okx/balance`,
-  marketData: `${backendUri}/api/okx/market-data`,
   autoTradeStatus: `${backendUri}/api/autotrade/status`,
   autoTradeToggle: `${backendUri}/api/autotrade/toggle`,
   autoTradeDebug: `${backendUri}/api/autotrade/debug`,

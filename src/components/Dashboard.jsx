@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { backendUri, wsUri, apiEndpoints } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
+import { backendUri, apiEndpoints } from '../config.js';
 import { 
   ChartBarIcon, 
   CurrencyDollarIcon, 
@@ -24,15 +24,19 @@ const Dashboard = () => {
   const [autoTradeStatus, setAutoTradeStatus] = useState(null);
   const [isToggling, setIsToggling] = useState(false);
 
-  // WebSocket connection
-  const { isConnected, lastMessage, error: wsError } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage, error: wsError } = useWebSocketContext();
 
   // Handle WebSocket messages
   useEffect(() => {
     if (lastMessage) {
+      console.log('📡 WebSocket message received:', lastMessage);
+      
       switch (lastMessage.type) {
         case 'price_update':
+          console.log('💰 Price update received:', lastMessage.data);
           setSolPrice(lastMessage.data.price);
+          console.log('✅ SOL price updated to:', lastMessage.data.price);
           setPriceHistory(prev => {
             const newHistory = [...prev, {
               price: lastMessage.data.price,
@@ -44,20 +48,34 @@ const Dashboard = () => {
           break;
           
         case 'balance_update':
+          console.log('💳 Balance update received:', lastMessage.data);
           setBalance(lastMessage.data);
           break;
           
         case 'order_update':
-          console.log('Order update received:', lastMessage.data);
+          console.log('📋 Order update received:', lastMessage.data);
           // You can add order notifications here
           break;
           
         case 'market_data':
+          console.log('📊 Market data received:', lastMessage.data);
           setMarketData(lastMessage.data);
           break;
           
+        case 'trading_log':
+          console.log('📝 Trading log received:', lastMessage.data);
+          // Handle trading log messages
+          break;
+          
+        case 'movement_analysis':
+          console.log('📈 Movement analysis received:', lastMessage.data);
+          // Handle movement analysis messages
+          break;
+          
         default:
-          console.log('Unknown message type:', lastMessage.type);
+          console.log('❓ Unknown message type:', lastMessage.type);
+          // Silently ignore unknown message types
+          break;
       }
     }
   }, [lastMessage]);
@@ -67,40 +85,54 @@ const Dashboard = () => {
     const fetchInitialData = async () => {
       try {
         setIsLoading(true);
+        console.log('🔄 Fetching initial data...');
         
         // Fetch initial price
+        console.log('📊 Fetching price from:', apiEndpoints.price);
         const priceResponse = await fetch(apiEndpoints.price);
+        console.log('📡 Price response status:', priceResponse.status);
+        
         if (priceResponse.ok) {
           const priceData = await priceResponse.json();
+          console.log('💰 Price data received:', priceData);
           setSolPrice(priceData.price);
+          console.log('✅ SOL price set to:', priceData.price);
+        } else {
+          console.error('❌ Price response not ok:', priceResponse.status);
         }
         
         // Fetch initial balance
+        console.log('💰 Fetching balance from:', apiEndpoints.balance);
         const balanceResponse = await fetch(apiEndpoints.balance);
+        console.log('📡 Balance response status:', balanceResponse.status);
+        
         if (balanceResponse.ok) {
           const balanceData = await balanceResponse.json();
+          console.log('💳 Balance data received:', balanceData);
           setBalance(balanceData);
-        }
-        
-        // Fetch market data
-        const marketResponse = await fetch(apiEndpoints.marketData);
-        if (marketResponse.ok) {
-          const marketData = await marketResponse.json();
-          setMarketData(marketData);
+        } else {
+          console.error('❌ Balance response not ok:', balanceResponse.status);
         }
         
         // Fetch auto-trade status
+        console.log('🤖 Fetching auto-trade status from:', apiEndpoints.autoTradeStatus);
         const autoTradeResponse = await fetch(apiEndpoints.autoTradeStatus);
+        console.log('📡 Auto-trade response status:', autoTradeResponse.status);
+        
         if (autoTradeResponse.ok) {
           const autoTradeData = await autoTradeResponse.json();
+          console.log('🤖 Auto-trade data received:', autoTradeData);
           setAutoTradeStatus(autoTradeData);
+        } else {
+          console.error('❌ Auto-trade response not ok:', autoTradeResponse.status);
         }
         
       } catch (err) {
-        console.error('Error fetching initial data:', err);
+        console.error('💥 Error fetching initial data:', err);
         setError('Failed to load initial data');
       } finally {
         setIsLoading(false);
+        console.log('🏁 Initial data fetch completed');
       }
     };
 
@@ -270,7 +302,10 @@ const Dashboard = () => {
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">SOL Price</h2>
             <div className="text-4xl font-bold text-green-400">
-              {solPrice ? formatCurrency(solPrice.price) : '---'}
+              {solPrice ? formatCurrency(solPrice) : '---'}
+            </div>
+            <div className="text-sm text-purple-200 mt-1">
+              Debug: solPrice = {JSON.stringify(solPrice)}
             </div>
           </div>
           <div className="text-right">
@@ -348,7 +383,7 @@ const Dashboard = () => {
             {balanceDetails.sol.toFixed(4)} SOL
           </div>
           <div className="text-purple-200">
-            ≈ {formatCurrency((balanceDetails.sol * (solPrice?.price || 0)))} USD
+            ≈ {formatCurrency((balanceDetails.sol * (solPrice || 0)))} USD
           </div>
         </div>
 
@@ -367,10 +402,10 @@ const Dashboard = () => {
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
         <h3 className="text-xl font-semibold text-white mb-4">Total Portfolio Value</h3>
         <div className="text-3xl font-bold text-yellow-400">
-          {formatCurrency((balanceDetails.sol * (solPrice?.price || 0)) + balanceDetails.usdt)} USD
+          {formatCurrency((balanceDetails.sol * (solPrice || 0)) + balanceDetails.usdt)} USD
         </div>
         <div className="text-yellow-200 text-sm mt-2">
-          SOL: {formatCurrency((balanceDetails.sol * (solPrice?.price || 0)))} | USDT: {formatCurrency(balanceDetails.usdt)}
+          SOL: {formatCurrency((balanceDetails.sol * (solPrice || 0)))} | USDT: {formatCurrency(balanceDetails.usdt)}
         </div>
       </div>
 
@@ -386,7 +421,7 @@ const Dashboard = () => {
       </div>
 
       {/* Market Data */}
-      {marketData && (
+      {/* {marketData && (
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">Market Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -416,7 +451,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Error Display */}
       {error && (

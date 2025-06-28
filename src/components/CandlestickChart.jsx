@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import useWebSocket from '../hooks/useWebSocket.js';
-import { backendUri, wsUri } from '../config.js';
+import { useWebSocketContext } from '../contexts/WebSocketContext';
+import { backendUri } from '../config.js';
 
 const CandlestickChart = ({ timeframe = '1m', maxCandles = 50 }) => {
   const canvasRef = useRef(null);
@@ -9,8 +9,8 @@ const CandlestickChart = ({ timeframe = '1m', maxCandles = 50 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // WebSocket connection
-  const { isConnected, lastMessage } = useWebSocket(wsUri);
+  // Shared WebSocket connection
+  const { isConnected, lastMessage } = useWebSocketContext();
 
   // Fetch initial candlestick data
   useEffect(() => {
